@@ -21,8 +21,8 @@ public:
     void play(){
 
         //map reset
-        for(int i = 0; i < mapSize; i++) {
-            for(int j = 0; j < mapSize; j++) {
+        for(int j = 0; j < mapSize; j++) {
+            for(int i = 0; i < mapSize; i++) {
                 isBomb[i][j] = false;
                 isUnlocked[i][j] = false;
                 isNumber[i][j] = false;
@@ -36,14 +36,14 @@ public:
             system("cls");
             makeMap(mapSize);
             d:
-            cout<<"\nInput x Coordinate to guess : ";
+            cout<<"\nInput x Coordinate (current row) to guess : ";
             cin>>koordinatTX;
-            if((koordinatTX>0)&&(koordinatTX<=mapSize)){
+            if((koordinatTX>=0)&&(koordinatTX<mapSize)){
 
                 e:
-                cout<<"\nInput y Coordinate to guess : ";
+                cout<<"\nInput y Coordinate (current line) to guess : ";
                 cin>>koordinatTY;
-                if((koordinatTY>0)&&(koordinatTY<=mapSize)){
+                if((koordinatTY>=0)&&(koordinatTY<mapSize)){
                     isUnlocked[koordinatTX][koordinatTY]=true;
                     goto f;
                 }
@@ -134,11 +134,13 @@ public:
     void makeMap(int mapSize){
         system("cls");
         
-        for(int i = 0;i<mapSize;i++){
-            for(int j=0;j<mapSize;j++){
+        for(int j = mapSize-1;j>=0;j--){
+            cout<<"Line "<<j<<" ";
+            for(int i=0;i<mapSize;i++){
+            
                 if (isUnlocked[i][j]){
                     if (isBomb[i][j]==true){
-                        cout<<"B ";
+                        cout<<"B    ";
                     }
                     else if (isNumber[i][j]==true){
                         cout<<bombAround[i][j];
@@ -147,15 +149,23 @@ public:
                     //hbs itu buat rumus buat is number (sekitar bomb) if not bomb has bomb next to it bombaround+=1; else is blank
     
                     else{
-                        cout<<"* ";
+                        cout<<"U    ";
                     }
                 }
                 else{
-                    cout<<"* ";
+                    cout<<"*    ";
                 }
             }
+            
             cout<<"\n"; 
+
         }
+        cout<<"       ";
+        for (int l=0;l<mapSize;l++){
+            cout<<"Row"<<l<<" ";
+        }
+        cout<<"\n";
+
     }
 
     int randomNumGenerator(){
@@ -214,5 +224,3 @@ int main() {
 // Rekursi untuk flood fill diperbolehkan dan disarankan, tapi tetap bisa dengan loop.
 // Validasi input dasar (ukuran papan, jumlah bom, koordinat) wajib dilakukan.
 // Note: Pengembangan program bersifat fleksibel, sesuai dengan kemampuan.
-
-//  i wanna sleep
