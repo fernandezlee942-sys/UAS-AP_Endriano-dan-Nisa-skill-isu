@@ -1,3 +1,5 @@
+//i use label when im too lazy to think whether the right syntax is continue or break dont judge me its just tht much easier
+
 #define Fernandez_Lebih_Ganteng_Dari_Justin_Bieber true
 #include <iostream>
 #include <cstdlib>
@@ -18,6 +20,7 @@ public:
     bool isUnlocked[10][10];
 
 
+
     void play(){
 
         //map reset
@@ -30,29 +33,52 @@ public:
                 isBlank[i][j] = true;
             }
         }
+        
+        
+        for(int j = 0; j < mapSize; j++) {
+            for(int i = 0; i < mapSize; i++) {
+                isBomb[i][j] = false;
+                isUnlocked[i][j] = true;
+                isNumber[i][j] = false;
+                bombAround[i][j] = 0;
+                isBlank[i][j] = true;
+            }
+        }
+        isUnlocked[0][0]=false;
+        //debugging purpose dont mind it
+        
+        
+        BombCreation();
+        checkSurrounding();
 
-        while(Fernandez_Lebih_Ganteng_Dari_Justin_Bieber){
+        while(checkAllUnlocked()==false){
             f:
             system("cls");
             makeMap(mapSize);
+
             d:
-            cout<<"\nInput x Coordinate (current row) to guess : ";
+            cout<<"\nInput x Coordinate (current column) to guess : ";
             cin>>koordinatTX;
+            
             if((koordinatTX>=0)&&(koordinatTX<mapSize)){
 
                 e:
-                cout<<"\nInput y Coordinate (current line) to guess : ";
+                cout<<"\nInput y Coordinate (current row) to guess : ";
                 cin>>koordinatTY;
                 if((koordinatTY>=0)&&(koordinatTY<mapSize)){
                     isUnlocked[koordinatTX][koordinatTY]=true;
-                    goto f;
+                    if(checkAllUnlocked()==false){
+                        goto f;
+                    }
+                    else{
+                        goto g;
+                    }
                 }
                 else{
-                ClearInputBuffer();
-                cout<<"Input should be an integer smaller than the map size\n";
-                system("pause");
-                goto e;
-
+                    ClearInputBuffer();
+                    cout<<"Input should be an integer smaller than the map size\n";
+                    system("pause");
+                    goto e;
                 }
 
             }
@@ -62,13 +88,33 @@ public:
                 system("pause");
                 goto d;
             }
-            
+
+        g:
+        playMenu();
         }
     }
 
-    void playMenu(){    
-        int menu;
+    bool checkAllUnlocked(){
+        int unlock = 0;
+        for(int j = 0;j<mapSize;j++){
+            for(int i=0;i<mapSize;i++){
+                if (isUnlocked[i][j]){
+                    unlock+=1;
+                }
+            }
+        }
+        if (unlock==(mapSize*mapSize)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
+    void playMenu(){
+        
+        int menu;
+        system("cls");
         cout<<"Minesweeper frfr : "<<endl;
         cout<<"1. New Game"<<endl;
         cout<<"2. Exit"<<endl;
@@ -86,7 +132,7 @@ public:
 
                 //small note, jlh bomb hrs lebih kecil dari ukuran map --> jaga2 kelupaan, persentase bom harus dibawah 20% ukuran map
 
-                if((mapSize<=10)&&(mapSize>3)){
+                if((mapSize<=10)&&(mapSize>=3)){
                     c:
                     cout<<"Input Bomb Total (the amount of bomb should be less or equal to 20% of the map size) : ";
                     cin>>bombTotal;
@@ -113,7 +159,9 @@ public:
             }
             else if (menu==2){
                 cout<<"Thanks for playing!";
-                break;
+                exit(0);
+                //you know how i kept using goto label whenver im too lazy to think abt anythuing? ye tht turned into a problem apparently the goto g; make a whole new session and break didnt quite get me out of the whole while loop so after some discussion with my buddy gpt o've choosed to use exit to just terminate the whole shit
+
             }
             else{
                 ClearInputBuffer();
@@ -135,49 +183,258 @@ public:
         system("cls");
         
         for(int j = mapSize-1;j>=0;j--){
-            cout<<"Line "<<j<<" ";
+            cout<<"Row "<<j<<"  ";
             for(int i=0;i<mapSize;i++){
             
                 if (isUnlocked[i][j]){
+
                     if (isBomb[i][j]==true){
-                        cout<<"B    ";
+                        cout<<"B     ";
                     }
                     else if (isNumber[i][j]==true){
-                        cout<<bombAround[i][j];
+                        cout<<bombAround[i][j]<<"     ";
                     }
                     //nanti buatgic kek, randomized bomb, is bomb jg dicatat pastikan g dobel isbombnya,
                     //hbs itu buat rumus buat is number (sekitar bomb) if not bomb has bomb next to it bombaround+=1; else is blank
     
                     else{
-                        cout<<"U    ";
+                        cout<<"U     ";
                     }
                 }
                 else{
-                    cout<<"*    ";
+                    cout<<"*     ";
                 }
             }
             
             cout<<"\n"; 
 
         }
-        cout<<"       ";
+        cout<<"      ";
         for (int l=0;l<mapSize;l++){
-            cout<<"Row"<<l<<" ";
+            cout<<"col "<<l<<" ";
         }
         cout<<"\n";
 
     }
 
     int randomNumGenerator(){
-       return rand()%mapSize+1;
+       return rand()%mapSize;
     }
 
     void BombCreation(){
-        for(int k=0;k<bombTotal;k++){
-            isBomb[randomNumGenerator()][randomNumGenerator()]=true;
-            
+        for(int k=0;k<bombTotal;){
+            int col = randomNumGenerator();
+            int row = randomNumGenerator();
+
+            if(!isBomb[col][row]){
+                isBomb[col][row]=true;
+                k++;
+            }
         }
-        
+    }
+
+    // i know there could've much much better way that didnt need this much loops and ifs but leave me alone, i make this whole shit without any thinking --> code first think later
+    void checkSurrounding(){
+        for(int i=0;i<mapSize;i++){
+            for(int j=0;j<mapSize;j++){
+                if(isBomb[i][j]==false){
+                    // kiri selain sudut
+                    if (i==0){
+                        if(j==0){ //kiri bawah
+                            // kanan atas
+                            if(isBomb[i+1][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // kanan
+                            if(isBomb[i+1][j]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // atas
+                            if(isBomb[i][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+                        }
+                        else if (j==mapSize-1){ // kiri atas
+                            // kanan
+                            if(isBomb[i+1][j]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // atas
+                            if(isBomb[i][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+                        
+                            //kanan bawah
+                            if(isBomb[i+1][j-1]==true){
+                                bombAround[i][j]+=1;
+                            }       
+                        }
+                        else{ 
+                            // kanan atas
+                            if(isBomb[i+1][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // kanan
+                            if(isBomb[i+1][j]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            //kanan bawah
+                            if(isBomb[i+1][j-1]==true){
+                                bombAround[i][j]+=1;
+                            }
+                        }
+                    }
+
+                    // kanan selain sudut
+                    if (i==mapSize-1){
+                        if(j==0){ //kanan bawah
+                           // atas
+                            if(isBomb[i][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // kiri
+                            if(isBomb[i-1][j]==true){
+                                bombAround[i][j]+=1;
+                            }
+                        
+                            //kiri atas
+                            if(isBomb[i-1][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+                        }
+                        
+                        else if(j==mapSize-1){ // kanan atas
+                            // kiri bawah
+                            if(isBomb[i-1][j-1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // kiri
+                            if(isBomb[i-1][j]==true){
+                                bombAround[i][j]+=1;
+                            }
+                        
+                            //bawah
+                            if(isBomb[i][j-1]==true){
+                                bombAround[i][j]+=1;
+                            }                    
+
+                        }
+                        
+                        else{
+                            // kiri bawah
+                            if(isBomb[i-1][j-1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // kiri
+                            if(isBomb[i-1][j]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            //kiri atas
+                            if(isBomb[i-1][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+                        }
+
+                    }
+
+                    // atas selain sudut
+                    if(j=mapSize-1){
+                        // kiri bawah
+                        if(isBomb[i-1][j-1]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        //bawah
+                        if(isBomb[i][j-1]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        //kanan bawah
+                        if(isBomb[i+1][j-1]==true){
+                            bombAround[i][j]+=1;
+                        }
+                    }
+                    
+                    // bawah selain sudut
+                    if(j==0){
+                        // kanan atas
+                        if(isBomb[i+1][j+1]==true){
+                            bombAround[i][j]+=1;
+                        }
+                    
+                        // atas
+                        if(isBomb[i][j+1]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        //kiri atas
+                        if(isBomb[i-1][j+1]==true){
+                            bombAround[i][j]+=1;
+                        }
+                    
+
+                    }
+
+                    else{
+                        
+                        // kanan atas
+                        if(isBomb[i+1][j+1]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        // kiri bawah
+                        if(isBomb[i-1][j-1]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        // kanan
+                        if(isBomb[i+1][j]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        // atas
+                        if(isBomb[i][j+1]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        // kiri
+                        if(isBomb[i-1][j]==true){
+                            bombAround[i][j]+=1;
+                        }
+                    
+                        //bawah
+                        if(isBomb[i][j-1]==true){
+                            bombAround[i][j]+=1;
+                        }
+                    
+                        //kiri atas
+                        if(isBomb[i-1][j+1]==true){
+                            bombAround[i][j]+=1;
+                        }
+                    
+                        //kanan bawah
+                        if(isBomb[i+1][j-1]==true){
+                            bombAround[i][j]+=1;
+                        }       
+                        
+
+                        if(bombAround[i][j]>0){
+                            isNumber[i][j]=true;
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
     void BlankspaceHandler(){
@@ -188,6 +445,7 @@ public:
 
 
 int main() {
+    system("cls");
     minesweeper inigamefrfr;
     inigamefrfr.playMenu();
     return 0;
@@ -223,4 +481,4 @@ int main() {
 
 // Rekursi untuk flood fill diperbolehkan dan disarankan, tapi tetap bisa dengan loop.
 // Validasi input dasar (ukuran papan, jumlah bom, koordinat) wajib dilakukan.
-// Note: Pengembangan program bersifat fleksibel, sesuai dengan kemampuan.
+// Note: Pengembangan program bersifat fleksibel, sesuai dengan kemampuan.a
