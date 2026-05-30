@@ -34,7 +34,7 @@ public:
     bool gameResult=true;  //true for win false for lose
     bool isFilled[10][10]; //--> would like to name it isOccupied but tbh isFilled sounds better
 
-
+    
     bool AllFilled(){
         int filledAmount = 0;
         for(int j = 0; j < mapSize; j++) {
@@ -66,7 +66,7 @@ public:
 
         for(int j = 0; j < mapSize; j++) {
             for(int i = 0; i < mapSize; i++) {
-                if(isFlagged[i][j]=isBomb[i][j]){
+                if(isFlagged[i][j]==isBomb[i][j]){
                     correctAnswer+=1;
                 }
                 if (correctAnswer==bombTotal){
@@ -76,13 +76,17 @@ public:
                     cout<<"You have lost!";
                     gameResult=false;
                 }
+
+                //maybe add a unlock all bomb and remake the map to make the player realize their mistake? -> make the cls before makemap dissappear if gameresul==false?
+
+
             }
         }
 
     }
 
     void play(){
-
+        gameResult=true;
         //map reset
         for(int j = 0; j < mapSize; j++) {
             for(int i = 0; i < mapSize; i++) {
@@ -95,45 +99,38 @@ public:
                 isFilled[i][j]=false;
             }
         }
-        
-        
-        // for(int j = 0; j < mapSize; j++) {
-        //     for(int i = 0; i < mapSize; i++) {
-        //         isBomb[i][j] = false;
-        //         isUnlocked[i][j] = true;
-        //         isNumber[i][j] = false;
-        //         bombAround[i][j] = 0;
-        //         isBlank[i][j] = true;
-        //     }
-        // }
-        // isUnlocked[0][0]=false;
-        // //debugging purpose dont mind it
-        
-        
+                
         BombCreation();
         checkSurrounding();
 
         while(checkAllUnlocked()==false){
             f:
+
             system("cls");
             makeMap(mapSize);
 
             int todo;
-            cout<<"\n What to do : ";
-
-            if(gameResult=true){
+            
+            if(gameResult==true){
+                cout<<"\n What to do : ";
                 cout<<"\n 1. Unlock a space";
                 cout<<"\n 2. Flag as bomb";
                 cout<<"\n 3. Unflag as coordinate";
                 cout<<"\n Choice : ";
             }
-            else if(AllFilled()==true){
-                cout<<"\n 4. Check answer (no return after this process)";
-            }
-            else if(gameResult=false){
+
+            else if(gameResult==false){
                 cout<<"You lose!\n";
+                cout<<"Answer : \n";
+                unlockAllBomb();
+                makeMap(mapSize);
                 system("pause");
+
                 goto g;
+            }
+            
+            if(AllFilled()==true){
+                cout<<"\n 4. Check answer (no return after this process)";
             }
 
             cin>>todo;
@@ -144,26 +141,32 @@ public:
                 goto f;
             }
             d:
-            cout<<"\nInput x Coordinate (current column) to guess : ";
+            cout<<"Input x Coordinate (current column) to guess : ";
             cin>>koordinatTX;
             if((koordinatTX>=0)&&(koordinatTX<mapSize)){
 
                 e:
-                cout<<"\nInput y Coordinate (current row) to guess : ";
+                cout<<"Input y Coordinate (current row) to guess : ";
                 cin>>koordinatTY;
                 if(todo==1){
-                    if(isUnlocked[koordinatTX][koordinatTY]==true){
-                        cout<<"Coordinates already unlocked\n";
-                        system("pause");
-                    }
-                    else if((koordinatTY>=0)&&(koordinatTY<mapSize)){
-                        isUnlocked[koordinatTX][koordinatTY]=true;
-                    }
-                    else{
-                        cout<<"Input should be an integer smaller than the map size\n";
-                        system("pause");
-                        goto e;
-                    }
+                    
+                        if(isUnlocked[koordinatTX][koordinatTY]==true){
+                            cout<<"Coordinates already unlocked\n";
+                            system("pause");
+                        }
+                        if((isUnlocked[koordinatTX][koordinatTY]==false)&&(isFlagged[koordinatTX][koordinatTY])){
+                            cout<<"Coordinates already flagged\n";
+                            system("pause");
+                        }
+                        // no need to complain abt how bad of a practice this is i know it myself, should've make a bgi if's before all of this to check for isflagged, since i did all of this wihtout planning shit i think it's kinda natural when i add new feature some legacy code needs a quick fix and this's one of the easiest i can do
+                        else if((koordinatTY>=0)&&(koordinatTY<mapSize)){
+                            isUnlocked[koordinatTX][koordinatTY]=true;
+                        }
+                        else{
+                            cout<<"Input should be an integer smaller than the map size\n";
+                            system("pause");
+                            goto e;
+                        }
                 }
                 else if (todo==2){
                     if(isFlagged[koordinatTX][koordinatTY]==true){
@@ -199,14 +202,17 @@ public:
         g:
         cout<<"The game has ended\n";
         cout<<"You have ";
-        if(gameResult=true){
+        if(gameResult==true){
             cout<<"won!"<<endl;
         }
         else{
             cout<<"lost!"<<endl;
+        
         }
-
-        cout<<"Time Spent : ";
+    
+        time_t startTime = time(0);
+        time_t endTime = time(0);
+        cout<<"Time Spent : "<<difftime(endTime,startTime)<<" seconds.\n";
         system("pause");
         playMenu();
         }
@@ -298,7 +304,9 @@ public:
     }
 
     void makeMap(int mapSize){
-        system("cls");
+        if(gameResult==true){
+            system("cls");
+        }
         
         for(int j = mapSize-1;j>=0;j--){
             cout<<"Row "<<j<<"  ";
@@ -608,6 +616,7 @@ public:
 
 
 int main() {
+    srand(time(0)); //this kid from ctime used to make sure the randomnumbergenerator result changes each session
     system("cls");
     minesweeper inigamefrfr;
     inigamefrfr.playMenu();
@@ -662,6 +671,52 @@ int main() {
 // game ends when --> user filled everything, and we do the check, if we found wrong flag, status = lost
 // check it by checker wheter current coordinate is unlocked or flagged if true than status = filled, if all is filled, do check the whole board, maybe let user decide when they wanna ends it, do it later
 
-// make the option to check answe only if all box is filled
-
 // the first unlocked never a bomb
+
+
+
+
+// void checkSurrounding() {
+//     for (int i = 0; i < mapSize; i++) {
+//         for (int j = 0; j < mapSize; j++) {
+//             if (isBomb[i][j]) continue; // Skip if this tile itself is a bomb
+
+//             // Look at all 8 directions around coordinate (i, j)
+//             for (int xOffset = -1; xOffset <= 1; xOffset++) {
+//                 for (int yOffset = -1; yOffset <= 1; yOffset++) {
+//                     int ni = i + xOffset;
+//                     int nj = j + yOffset;
+
+//                     // Ensure neighbor is inside the valid map bounds
+//                     if (ni >= 0 && ni < mapSize && nj >= 0 && nj < mapSize) {
+//                         if (isBomb[ni][nj]) {
+//                             bombAround[i][j]++;
+//                         }
+//                     }
+//                 }
+//             }
+
+//             if (bombAround[i][j] > 0) {
+//                 isNumber[i][j] = true;
+//             }
+//         }
+//     }
+// }
+
+// void BlankspaceHandler(int x, int y) {
+//     // Base cases: stop if out of bounds, already unlocked, or flagged
+//     if (x < 0 || x >= mapSize || y < 0 || y >= mapSize) return;
+//     if (isUnlocked[x][y] || isFlagged[x][y]) return;
+
+//     // Reveal the current tile
+//     isUnlocked[x][y] = true;
+
+//     // If it's a blank tile (0 bombs around), recursively call on all 8 neighbors
+//     if (bombAround[x][y] == 0) {
+//         for (int xOffset = -1; xOffset <= 1; xOffset++) {
+//             for (int yOffset = -1; yOffset <= 1; yOffset++) {
+//                 BlankspaceHandler(x + xOffset, y + yOffset);
+//             }
+//         }
+//     }
+// }
