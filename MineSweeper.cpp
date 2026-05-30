@@ -1,6 +1,6 @@
 // (currently the input method use in this whole program only stops user from typing random bullshit like string in the input --> you can still input float like 1.2 without any problems but try doing it with smtg like 1.232345342, the program itself still works normally but you'll trigger the safety mechanism added to the next cin so embrace for the impact, as for why I didnt make it so user cant input float, I'm too deep into this shit, wished I noticed it much earlier. If you input smtg like 1.2332342 I assume that its not likely ur trying to play the game normally but just trying to find a bug or 2 --> dev note: sorry for the impoliteness not quite used to polite words in english)
 
-
+// chekanswer(); goto g;
 
 
 
@@ -31,7 +31,55 @@ public:
     int bombAround[10][10];
     bool isUnlocked[10][10];
     bool isFlagged[10][10];
-    string gameResult;
+    bool gameResult=true;  //true for win false for lose
+    bool isFilled[10][10]; //--> would like to name it isOccupied but tbh isFilled sounds better
+
+
+    bool AllFilled(){
+        int filledAmount = 0;
+        for(int j = 0; j < mapSize; j++) {
+            for(int i = 0; i < mapSize; i++) {
+                if((isUnlocked[i][j]==true)||(isFlagged[i][j]==true))
+                    filledAmount+=1;
+            }
+        }
+        if(filledAmount==(mapSize*mapSize)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    void unlockAllBomb(){
+        for(int j = 0; j < mapSize; j++) {
+            for(int i = 0; i < mapSize; i++) {
+                if(isBomb[i][j] == true){
+                    isUnlocked[i][j]=true;
+                }
+            }
+        }
+    }
+
+    void checkAnswer(){
+        int correctAnswer = 0;
+
+        for(int j = 0; j < mapSize; j++) {
+            for(int i = 0; i < mapSize; i++) {
+                if(isFlagged[i][j]=isBomb[i][j]){
+                    correctAnswer+=1;
+                }
+                if (correctAnswer==bombTotal){
+                    cout<<"You have won!";
+                }
+                else{
+                    cout<<"You have lost!";
+                    gameResult=false;
+                }
+            }
+        }
+
+    }
 
     void play(){
 
@@ -44,21 +92,22 @@ public:
                 bombAround[i][j] = 0;
                 isBlank[i][j] = true;
                 isFlagged[i][j] = false;  
+                isFilled[i][j]=false;
             }
         }
         
         
-        for(int j = 0; j < mapSize; j++) {
-            for(int i = 0; i < mapSize; i++) {
-                isBomb[i][j] = false;
-                isUnlocked[i][j] = true;
-                isNumber[i][j] = false;
-                bombAround[i][j] = 0;
-                isBlank[i][j] = true;
-            }
-        }
-        isUnlocked[0][0]=false;
-        //debugging purpose dont mind it
+        // for(int j = 0; j < mapSize; j++) {
+        //     for(int i = 0; i < mapSize; i++) {
+        //         isBomb[i][j] = false;
+        //         isUnlocked[i][j] = true;
+        //         isNumber[i][j] = false;
+        //         bombAround[i][j] = 0;
+        //         isBlank[i][j] = true;
+        //     }
+        // }
+        // isUnlocked[0][0]=false;
+        // //debugging purpose dont mind it
         
         
         BombCreation();
@@ -71,12 +120,23 @@ public:
 
             int todo;
             cout<<"\n What to do : ";
-            cout<<"\n 1. Unlock a space";
-            cout<<"\n 2. Flag as bomb";
-            cout<<"\n 3. Unflag as coordinate";
-            cout<<"\n Choice : ";
+
+            if(gameResult=true){
+                cout<<"\n 1. Unlock a space";
+                cout<<"\n 2. Flag as bomb";
+                cout<<"\n 3. Unflag as coordinate";
+                cout<<"\n Choice : ";
+            }
+            else if(AllFilled()==true){
+                cout<<"\n 4. Check answer (no return after this process)";
+            }
+            else if(gameResult=false){
+                cout<<"You lose!\n";
+                system("pause");
+                goto g;
+            }
+
             cin>>todo;
-    
             if((todo<1)||(todo>3)){   
                 ClearInputBuffer();
                 cout<<"Choose an integer betweenn 1-3\n";
@@ -114,7 +174,7 @@ public:
                     }
                 }
 
-                else if (todo=3){
+                else if (todo==3){
                     if(isFlagged[koordinatTX][koordinatTY]==false){
                         cout<<"Spot has not yet to be flagged!";
                     }
@@ -122,7 +182,9 @@ public:
                         isFlagged[koordinatTX][koordinatTY]=false;
                     }
                 }
-                
+                else if ((todo==4)&&(AllFilled()==true)){
+                    checkAnswer();
+                }
 
             }
 
@@ -133,36 +195,19 @@ public:
                 goto d;
             }
         }
-        cout<<"The game has ended\n";
-        cout<<"You have "<<gameResult<<endl;
-        cout<<"Time Spent : ";
-// lnjt
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // else if (todo==2){ //flag bomb
-            //     isFlagged[koordinatTX][koordinatTY]=true;
-            // }   
-            // else if(todo==3){ //unflag bomb
-            //     isFlagged[koordinatTX][koordinatTY]=false;
-            // }     
-            // else{
-            //     ClearInputBuffer();
-            //     cout<<"Choose an integer between 1-3\n";
-            //     system("pause");
-            //     goto f;
-            // }
+        
         g:
+        cout<<"The game has ended\n";
+        cout<<"You have ";
+        if(gameResult=true){
+            cout<<"won!"<<endl;
+        }
+        else{
+            cout<<"lost!"<<endl;
+        }
+
+        cout<<"Time Spent : ";
+        system("pause");
         playMenu();
         }
     
@@ -263,6 +308,7 @@ public:
 
                     if (isBomb[i][j]==true){
                         cout<<"B     ";
+                        gameResult=false;
                     }
                     else if (isNumber[i][j]==true){
                         cout<<bombAround[i][j]<<"     ";
@@ -616,4 +662,6 @@ int main() {
 // game ends when --> user filled everything, and we do the check, if we found wrong flag, status = lost
 // check it by checker wheter current coordinate is unlocked or flagged if true than status = filled, if all is filled, do check the whole board, maybe let user decide when they wanna ends it, do it later
 
-// 
+// make the option to check answe only if all box is filled
+
+// the first unlocked never a bomb
