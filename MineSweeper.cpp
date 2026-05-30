@@ -1,10 +1,5 @@
 // (currently the input method use in this whole program only stops user from typing random bullshit like string in the input --> you can still input float like 1.2 without any problems but try doing it with smtg like 1.232345342, the program itself still works normally but you'll trigger the safety mechanism added to the next cin so embrace for the impact, as for why I didnt make it so user cant input float, I'm too deep into this shit, wished I noticed it much earlier. If you input smtg like 1.2332342 I assume that its not likely ur trying to play the game normally but just trying to find a bug or 2 --> dev note: sorry for the impoliteness not quite used to polite words in english)
 
-// chekanswer(); goto g;
-
-
-
-
 
 
 //i use label when im too lazy to think whether the right syntax is continue or break dont judge me its just tht much easier
@@ -359,7 +354,7 @@ public:
             cout<<"col "<<l<<" ";
         }
         cout<<"\n";
-
+        
     }
 
     int randomNumGenerator(){
@@ -435,55 +430,6 @@ int main() {
 }
 
 
-
-
-//nanti buat biar percobaan pertama pasti bukan bomb
-
-// sistem flag bomb
-// Buka kotak: jika kena bom → game over, tampilkan semua bom.
-// Tandai / hapus tanda: untuk mencurigai bom.
-
-
-// Jika kotak yang dibuka berisi angka 0, buka otomatis area kosong di sekitarnya hingga batas angka > 0 (efek flood fill). Implementasi bisa rekursif atau iteratif.
-
-// Pemain menang jika semua bom berhasil ditandai dengan benar (tidak boleh ada tanda di kotak aman). Bukan hanya dengan membuka semua kotak aman. --> buat kek teks menangnya
-
-
-// Penghitung Waktu
-// Catat waktu permainan (dalam detik) sejak papan pertama kali ditampilkan hingga permainan berakhir. Tampilkan saat menang atau kalah.
-
-// Papan ditampilkan dengan rapi, lengkap dengan informasi jumlah bom yang belum ditandai dan waktu berjalan. Koordinat baris/kolom bisa menggunakan angka 1..N.
-
-
-
-// Gambaran Umum :
-
-// Requirements Program :
-// Kelas Permainan
-// Buat satu class yang menangani seluruh state permainan: papan, bom, status buka/tandai, ukuran, dan logika permainan. Jangan gunakan struct tambahan.
-
-
-
-
-
-
-
-
-
-
-// Rekursi untuk flood fill diperbolehkan dan disarankan, tapi tetap bisa dengan loop.
-// Validasi input dasar (ukuran papan, jumlah bom, koordinat) wajib dilakukan.
-// Note: Pengembangan program bersifat fleksibel, sesuai dengan kemampuan.a
-
-
-
-
-
-// game ends when --> user filled everything, and we do the check, if we found wrong flag, status = lost
-// check it by checker wheter current coordinate is unlocked or flagged if true than status = filled, if all is filled, do check the whole board, maybe let user decide when they wanna ends it, do it later
-
-// the first unlocked never a bomb
-
-
-
-
+// todo list:
+// - perbaiki koordinat dari line 0 jadikan ke line 1-n;
+// - first unlocked cant be bomb, told the bomb maker to make a new bomb;
