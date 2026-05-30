@@ -1,4 +1,16 @@
+// (currently the input method use in this whole program only stops user from typing random bullshit like string in the input --> you can still input float like 1.2 without any problems but try doing it with smtg like 1.232345342, the program itself still works normally but you'll trigger the safety mechanism added to the next cin so embrace for the impact, as for why I didnt make it so user cant input float, I'm too deep into this shit, wished I noticed it much earlier. If you input smtg like 1.2332342 I assume that its not likely ur trying to play the game normally but just trying to find a bug or 2 --> dev note: sorry for the impoliteness not quite used to polite words in english)
+
+
+
+
+
+
+
+
 //i use label when im too lazy to think whether the right syntax is continue or break dont judge me its just tht much easier
+
+// i've realized it midway but i could've just make the clearinputbuffer into a function that took string parameter(the error name) but apparently im too lazy to change it now
+
 
 #define Fernandez_Lebih_Ganteng_Dari_Justin_Bieber true
 #include <iostream>
@@ -18,8 +30,8 @@ public:
     bool isNumber[10][10];
     int bombAround[10][10];
     bool isUnlocked[10][10];
-
-
+    bool isFlagged[10][10];
+    string gameResult;
 
     void play(){
 
@@ -31,6 +43,7 @@ public:
                 isNumber[i][j] = false;
                 bombAround[i][j] = 0;
                 isBlank[i][j] = true;
+                isFlagged[i][j] = false;  
             }
         }
         
@@ -56,43 +69,103 @@ public:
             system("cls");
             makeMap(mapSize);
 
+            int todo;
+            cout<<"\n What to do : ";
+            cout<<"\n 1. Unlock a space";
+            cout<<"\n 2. Flag as bomb";
+            cout<<"\n 3. Unflag as coordinate";
+            cout<<"\n Choice : ";
+            cin>>todo;
+    
+            if((todo<1)||(todo>3)){   
+                ClearInputBuffer();
+                cout<<"Choose an integer betweenn 1-3\n";
+                system("pause");
+                goto f;
+            }
             d:
             cout<<"\nInput x Coordinate (current column) to guess : ";
             cin>>koordinatTX;
-            
             if((koordinatTX>=0)&&(koordinatTX<mapSize)){
 
                 e:
                 cout<<"\nInput y Coordinate (current row) to guess : ";
                 cin>>koordinatTY;
-                if((koordinatTY>=0)&&(koordinatTY<mapSize)){
-                    isUnlocked[koordinatTX][koordinatTY]=true;
-                    if(checkAllUnlocked()==false){
-                        goto f;
+                if(todo==1){
+                    if(isUnlocked[koordinatTX][koordinatTY]==true){
+                        cout<<"Coordinates already unlocked\n";
+                        system("pause");
+                    }
+                    else if((koordinatTY>=0)&&(koordinatTY<mapSize)){
+                        isUnlocked[koordinatTX][koordinatTY]=true;
                     }
                     else{
-                        goto g;
+                        cout<<"Input should be an integer smaller than the map size\n";
+                        system("pause");
+                        goto e;
                     }
                 }
-                else{
-                    ClearInputBuffer();
-                    cout<<"Input should be an integer smaller than the map size\n";
-                    system("pause");
-                    goto e;
+                else if (todo==2){
+                    if(isFlagged[koordinatTX][koordinatTY]==true){
+                        cout<<"Spot has been flagged, choose another coordinate\n";
+                    }
+                    else{
+                        isFlagged[koordinatTX][koordinatTY]=true;
+                    }
                 }
 
+                else if (todo=3){
+                    if(isFlagged[koordinatTX][koordinatTY]==false){
+                        cout<<"Spot has not yet to be flagged!";
+                    }
+                    else{
+                        isFlagged[koordinatTX][koordinatTY]=false;
+                    }
+                }
+                
+
             }
+
             else{
                 ClearInputBuffer();
                 cout<<"Input should be an integer smaller than the map size\n";
                 system("pause");
                 goto d;
             }
+        }
+        cout<<"The game has ended\n";
+        cout<<"You have "<<gameResult<<endl;
+        cout<<"Time Spent : ";
+// lnjt
 
+
+
+
+
+
+
+
+
+
+
+
+
+            // else if (todo==2){ //flag bomb
+            //     isFlagged[koordinatTX][koordinatTY]=true;
+            // }   
+            // else if(todo==3){ //unflag bomb
+            //     isFlagged[koordinatTX][koordinatTY]=false;
+            // }     
+            // else{
+            //     ClearInputBuffer();
+            //     cout<<"Choose an integer between 1-3\n";
+            //     system("pause");
+            //     goto f;
+            // }
         g:
         playMenu();
         }
-    }
+    
 
     bool checkAllUnlocked(){
         int unlock = 0;
@@ -185,8 +258,8 @@ public:
         for(int j = mapSize-1;j>=0;j--){
             cout<<"Row "<<j<<"  ";
             for(int i=0;i<mapSize;i++){
-            
-                if (isUnlocked[i][j]){
+
+                if (isUnlocked[i][j]==true){
 
                     if (isBomb[i][j]==true){
                         cout<<"B     ";
@@ -194,18 +267,18 @@ public:
                     else if (isNumber[i][j]==true){
                         cout<<bombAround[i][j]<<"     ";
                     }
-                    //nanti buatgic kek, randomized bomb, is bomb jg dicatat pastikan g dobel isbombnya,
-                    //hbs itu buat rumus buat is number (sekitar bomb) if not bomb has bomb next to it bombaround+=1; else is blank
-    
                     else{
                         cout<<"U     ";
                     }
                 }
+                else if((isUnlocked[i][j]==false)&&(isFlagged[i][j]==true)){
+                    cout<<"F     ";
+
+                }
                 else{
                     cout<<"*     ";
                 }
-            }
-            
+            }            
             cout<<"\n"; 
 
         }
@@ -238,6 +311,10 @@ public:
         for(int i=0;i<mapSize;i++){
             for(int j=0;j<mapSize;j++){
                 if(isBomb[i][j]==false){
+
+
+                    // you should really trust me that i really regretted the fact that i didnt make this whole check thingies into function, the whole copy pasting is so tiring
+
                     // kiri selain sudut
                     if (i==0){
                         if(j==0){ //kiri bawah
@@ -302,7 +379,7 @@ public:
                     }
 
                     // kanan selain sudut
-                    if (i==mapSize-1){
+                    else if (i==mapSize-1){
                         if(j==0){ //kanan bawah
                            // atas
                             if(isBomb[i][j+1]==true){
@@ -369,7 +446,7 @@ public:
                     }
 
                     // atas selain sudut
-                    if(j==mapSize-1){
+                    else if(j==mapSize-1){
                         // kiri bawah
                         if(isBomb[i-1][j-1]==true){
                             bombAround[i][j]+=1;
@@ -397,7 +474,7 @@ public:
                     }
                     
                     // bawah selain sudut
-                    if(j==0){
+                    else if(j==0){
                         // kanan atas
                         if(isBomb[i+1][j+1]==true){
                             bombAround[i][j]+=1;
@@ -491,21 +568,20 @@ int main() {
     return 0;
 }
 
-// Gambaran Umum :
-// Permainan berlangsung pada papan berukuran N x N (N bisa dipilih pemain, misal 4–10). Di dalam papan terdapat sejumlah bom yang ditempatkan secara acak. Pemain dapat membuka kotak atau menandai kotak yang dicurigai bom. 
 
-// Requirements Program :
-// Kelas Permainan
-// Buat satu class yang menangani seluruh state permainan: papan, bom, status buka/tandai, ukuran, dan logika permainan. Jangan gunakan struct tambahan.
 
-// Pemain bisa memilih ukuran papan dan jumlah bom sebelum mulai. Bom ditanam acak, dan setiap kotak bukan bom harus mengetahui berapa bom di sekitarnya (8 tetangga).
 
+//nanti buat biar percobaan pertama pasti bukan bomb
+
+// sistem flag bomb
 // Buka kotak: jika kena bom → game over, tampilkan semua bom.
 // Tandai / hapus tanda: untuk mencurigai bom.
+
+
 // Jika kotak yang dibuka berisi angka 0, buka otomatis area kosong di sekitarnya hingga batas angka > 0 (efek flood fill). Implementasi bisa rekursif atau iteratif.
 
+// Pemain menang jika semua bom berhasil ditandai dengan benar (tidak boleh ada tanda di kotak aman). Bukan hanya dengan membuka semua kotak aman. --> buat kek teks menangnya
 
-// Pemain menang jika semua bom berhasil ditandai dengan benar (tidak boleh ada tanda di kotak aman). Bukan hanya dengan membuka semua kotak aman.
 
 // Penghitung Waktu
 // Catat waktu permainan (dalam detik) sejak papan pertama kali ditampilkan hingga permainan berakhir. Tampilkan saat menang atau kalah.
@@ -513,12 +589,31 @@ int main() {
 // Papan ditampilkan dengan rapi, lengkap dengan informasi jumlah bom yang belum ditandai dan waktu berjalan. Koordinat baris/kolom bisa menggunakan angka 1..N.
 
 
-// Program memiliki menu sederhana: Mulai Permainan Baru, Keluar. Setelah selesai satu ronde, pemain bisa kembali ke menu.
 
-// Constraints
-// Gunakan array 2D statis dengan ukuran maksimum 10×10.
-// Header yang diizinkan: <iostream>, <cstdlib>, <ctime>. Jika ingin menggunakan Header lain atau custom, silahkan hubungi Asisten Lab.
+// Gambaran Umum :
+
+// Requirements Program :
+// Kelas Permainan
+// Buat satu class yang menangani seluruh state permainan: papan, bom, status buka/tandai, ukuran, dan logika permainan. Jangan gunakan struct tambahan.
+
+
+
+
+
+
+
+
+
 
 // Rekursi untuk flood fill diperbolehkan dan disarankan, tapi tetap bisa dengan loop.
 // Validasi input dasar (ukuran papan, jumlah bom, koordinat) wajib dilakukan.
 // Note: Pengembangan program bersifat fleksibel, sesuai dengan kemampuan.a
+
+
+
+
+
+// game ends when --> user filled everything, and we do the check, if we found wrong flag, status = lost
+// check it by checker wheter current coordinate is unlocked or flagged if true than status = filled, if all is filled, do check the whole board, maybe let user decide when they wanna ends it, do it later
+
+// 
