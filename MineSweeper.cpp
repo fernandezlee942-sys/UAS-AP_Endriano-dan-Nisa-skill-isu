@@ -21,6 +21,9 @@ using namespace std;
 
 class minesweeper{
 public:
+    time_t startTime = time(0);
+    time_t endTime = time(0);
+
     int mapSize;
     int bombTotal;
     int koordinatTX;
@@ -69,20 +72,11 @@ public:
                 if(isFlagged[i][j]==isBomb[i][j]){
                     correctAnswer+=1;
                 }
-                if (correctAnswer==bombTotal){
-                    cout<<"You have won!";
-                }
-                else{
-                    cout<<"You have lost!";
-                    gameResult=false;
-                }
-
-                //maybe add a unlock all bomb and remake the map to make the player realize their mistake? -> make the cls before makemap dissappear if gameresul==false?
-
-
             }
         }
-
+        if (correctAnswer<bombTotal){
+            gameResult=false;
+        }
     }
 
     void play(){
@@ -103,7 +97,7 @@ public:
         BombCreation();
         checkSurrounding();
 
-        while(checkAllUnlocked()==false){
+        while(Fernandez_Lebih_Ganteng_Dari_Justin_Bieber){
             f:
 
             system("cls");
@@ -116,7 +110,9 @@ public:
                 cout<<"\n 1. Unlock a space";
                 cout<<"\n 2. Flag as bomb";
                 cout<<"\n 3. Unflag as coordinate";
-                cout<<"\n Choice : ";
+                if(AllFilled()==false){
+                    cout<<"\n Choice : ";
+                }
             }
 
             else if(gameResult==false){
@@ -125,21 +121,38 @@ public:
                 unlockAllBomb();
                 makeMap(mapSize);
                 system("pause");
-
+                
                 goto g;
             }
-            
+            // again, i know how much of a bad practice it is but tbh the amount of line this code has is enough to stop me from touching this spaghetti code
+
             if(AllFilled()==true){
                 cout<<"\n 4. Check answer (no return after this process)";
+                cout<<"\n Choice : ";
+            }
+            cin>>todo;
+            if(AllFilled()==false){
+                if((todo<1)||(todo>3)){   
+                    ClearInputBuffer();
+                    cout<<"Choose an integer betweenn 1-3\n";
+                    system("pause");
+                    goto f;
+                }
+            }
+            else if(AllFilled()==true){
+                if((todo<1)||(todo>4)){
+                    ClearInputBuffer();
+                    cout<<"Choose an integer betweenn 1-4\n";
+                    system("pause");
+                    goto f;
+                }
+            }
+            
+            if(todo==4){
+                checkAnswer();
+                goto g;
             }
 
-            cin>>todo;
-            if((todo<1)||(todo>3)){   
-                ClearInputBuffer();
-                cout<<"Choose an integer betweenn 1-3\n";
-                system("pause");
-                goto f;
-            }
             d:
             cout<<"Input x Coordinate (current column) to guess : ";
             cin>>koordinatTX;
@@ -149,32 +162,39 @@ public:
                 cout<<"Input y Coordinate (current row) to guess : ";
                 cin>>koordinatTY;
                 if(todo==1){
-                    
-                        if(isUnlocked[koordinatTX][koordinatTY]==true){
-                            cout<<"Coordinates already unlocked\n";
-                            system("pause");
-                        }
-                        if((isUnlocked[koordinatTX][koordinatTY]==false)&&(isFlagged[koordinatTX][koordinatTY])){
-                            cout<<"Coordinates already flagged\n";
-                            system("pause");
-                        }
-                        // no need to complain abt how bad of a practice this is i know it myself, should've make a bgi if's before all of this to check for isflagged, since i did all of this wihtout planning shit i think it's kinda natural when i add new feature some legacy code needs a quick fix and this's one of the easiest i can do
-                        else if((koordinatTY>=0)&&(koordinatTY<mapSize)){
-                            isUnlocked[koordinatTX][koordinatTY]=true;
-                        }
-                        else{
-                            cout<<"Input should be an integer smaller than the map size\n";
-                            system("pause");
-                            goto e;
-                        }
+                    if(isUnlocked[koordinatTX][koordinatTY]==true){
+                        cout<<"Coordinates already unlocked\n";
+                        system("pause");
+                    }
+                    if((isUnlocked[koordinatTX][koordinatTY]==false)&&(isFlagged[koordinatTX][koordinatTY]==true)){
+                        cout<<"Coordinates already flagged\n";
+                        system("pause");
+                    }
+                    // no need to complain abt how bad of a practice this is i know it myself, should've make a bgi if's before all of this to check for isflagged, since i did all of this wihtout planning shit i think it's kinda natural when i add new feature some legacy code needs a quick fix and this's one of the easiest i can do
+                    else if((koordinatTY>=0)&&(koordinatTY<mapSize)){
+                        // isUnlocked[koordinatTX][koordinatTY]=true;
+                        BlankspaceHandler(koordinatTX,koordinatTY);
+                    }
+                    else{
+                        cout<<"Input should be an integer smaller than the map size\n";
+                        system("pause");
+                        goto e;
+                    }
+                    goto f;
                 }
                 else if (todo==2){
                     if(isFlagged[koordinatTX][koordinatTY]==true){
                         cout<<"Spot has been flagged, choose another coordinate\n";
+                        system("pause");
+                    }
+                    else if(isUnlocked[koordinatTX][koordinatTY]){
+                        cout<<"Spot has been unlocked, choose another coordinate\n";
+                        system("pause");
                     }
                     else{
                         isFlagged[koordinatTX][koordinatTY]=true;
                     }
+                    goto f;
                 }
 
                 else if (todo==3){
@@ -184,39 +204,34 @@ public:
                     else{
                         isFlagged[koordinatTX][koordinatTY]=false;
                     }
-                }
-                else if ((todo==4)&&(AllFilled()==true)){
-                    checkAnswer();
+                    goto f;
                 }
 
             }
-
+        
             else{
                 ClearInputBuffer();
                 cout<<"Input should be an integer smaller than the map size\n";
                 system("pause");
                 goto d;
             }
-        }
-        
-        g:
-        cout<<"The game has ended\n";
-        cout<<"You have ";
-        if(gameResult==true){
-            cout<<"won!"<<endl;
-        }
-        else{
-            cout<<"lost!"<<endl;
-        
-        }
     
-        time_t startTime = time(0);
-        time_t endTime = time(0);
-        cout<<"Time Spent : "<<difftime(endTime,startTime)<<" seconds.\n";
-        system("pause");
-        playMenu();
+        
+            g:
+            cout<<"The game has ended\n";
+            cout<<"You have ";
+            if(gameResult==true){
+                cout<<"won!"<<endl;
+            }
+            else{
+                cout<<"lost!"<<endl;   
+            }
+        
+            cout<<"Time Spent : "<<difftime(endTime,startTime)<<" seconds.\n";
+            system("pause");
+            playMenu();
         }
-    
+    }
 
     bool checkAllUnlocked(){
         int unlock = 0;
@@ -227,7 +242,7 @@ public:
                 }
             }
         }
-        if (unlock==(mapSize*mapSize)){
+        if (unlock==((mapSize*mapSize)-bombTotal)){
             return true;
         }
         else{
@@ -360,256 +375,49 @@ public:
         }
     }
 
-    // i know there could've much much better way that didnt need this much loops and ifs but leave me alone, i make this whole shit without any thinking --> code first think later
-    void checkSurrounding(){
-        for(int i=0;i<mapSize;i++){
-            for(int j=0;j<mapSize;j++){
-                if(isBomb[i][j]==false){
+    void checkSurrounding() {
+        for (int i = 0; i < mapSize; i++) {
+            for (int j = 0; j < mapSize; j++) {
+                if (isBomb[i][j]) continue; // Skip if this tile itself is a bomb
 
+                // Look at all 8 directions around coordinate (i, j)
+                for (int xOffset = -1; xOffset <= 1; xOffset++) {
+                    for (int yOffset = -1; yOffset <= 1; yOffset++) {
+                        int ni = i + xOffset;
+                        int nj = j + yOffset;
 
-                    // you should really trust me that i really regretted the fact that i didnt make this whole check thingies into function, the whole copy pasting is so tiring
-
-                    // kiri selain sudut
-                    if (i==0){
-                        if(j==0){ //kiri bawah
-                            // kanan atas
-                            if(isBomb[i+1][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // kanan
-                            if(isBomb[i+1][j]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // atas
-                            if(isBomb[i][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-                        }
-                        else if (j==mapSize-1){ // kiri atas
-                            // kanan
-                            if(isBomb[i+1][j]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // atas
-                            if(isBomb[i][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-                        
-                            //kanan bawah
-                            if(isBomb[i+1][j-1]==true){
-                                bombAround[i][j]+=1;
-                            }       
-                        }
-                        else{ 
-                            // kanan atas
-                            if(isBomb[i+1][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // kanan
-                            if(isBomb[i+1][j]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            //bawah
-                            if(isBomb[i][j-1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // atas
-                            if(isBomb[i][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-
-                            //kanan bawah
-                            if(isBomb[i+1][j-1]==true){
-                                bombAround[i][j]+=1;
+                        // Ensure neighbor is inside the valid map bounds
+                        if (ni >= 0 && ni < mapSize && nj >= 0 && nj < mapSize) {
+                            if (isBomb[ni][nj]==true) {
+                                bombAround[i][j]++;
                             }
                         }
                     }
-
-                    // kanan selain sudut
-                    else if (i==mapSize-1){
-                        if(j==0){ //kanan bawah
-                           // atas
-                            if(isBomb[i][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // kiri
-                            if(isBomb[i-1][j]==true){
-                                bombAround[i][j]+=1;
-                            }
-                        
-                            //kiri atas
-                            if(isBomb[i-1][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-                        }
-                        
-                        else if(j==mapSize-1){ // kanan atas
-                            // kiri bawah
-                            if(isBomb[i-1][j-1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // kiri
-                            if(isBomb[i-1][j]==true){
-                                bombAround[i][j]+=1;
-                            }
-                        
-                            //bawah
-                            if(isBomb[i][j-1]==true){
-                                bombAround[i][j]+=1;
-                            }                    
-
-                        }
-                        
-                        else{
-                            // kiri bawah
-                            if(isBomb[i-1][j-1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // kiri
-                            if(isBomb[i-1][j]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            //kiri atas
-                            if(isBomb[i-1][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-    
-                            //bawah
-                            if(isBomb[i][j-1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                            // atas
-                            if(isBomb[i][j+1]==true){
-                                bombAround[i][j]+=1;
-                            }
-
-                        }
-
-                    }
-
-                    // atas selain sudut
-                    else if(j==mapSize-1){
-                        // kiri bawah
-                        if(isBomb[i-1][j-1]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        //bawah
-                        if(isBomb[i][j-1]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        //kanan bawah
-                        if(isBomb[i+1][j-1]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        // kiri
-                        if(isBomb[i-1][j]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        // kanan
-                        if(isBomb[i+1][j]==true){
-                            bombAround[i][j]+=1;
-                        }
-                    }
-                    
-                    // bawah selain sudut
-                    else if(j==0){
-                        // kanan atas
-                        if(isBomb[i+1][j+1]==true){
-                            bombAround[i][j]+=1;
-                        }
-                        
-                        // kiri
-                        if(isBomb[i-1][j]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        // kanan
-                        if(isBomb[i+1][j]==true){
-                            bombAround[i][j]+=1;
-                        }
-                        
-                        // atas
-                        if(isBomb[i][j+1]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        //kiri atas
-                        if(isBomb[i-1][j+1]==true){
-                            bombAround[i][j]+=1;
-                        }
-                    
-
-                    }
-
-                    else{
-                        
-                        // kanan atas
-                        if(isBomb[i+1][j+1]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        // kiri bawah
-                        if(isBomb[i-1][j-1]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        // kanan
-                        if(isBomb[i+1][j]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        // atas
-                        if(isBomb[i][j+1]==true){
-                            bombAround[i][j]+=1;
-                        }
-
-                        // kiri
-                        if(isBomb[i-1][j]==true){
-                            bombAround[i][j]+=1;
-                        }
-                    
-                        //bawah
-                        if(isBomb[i][j-1]==true){
-                            bombAround[i][j]+=1;
-                        }
-                    
-                        //kiri atas
-                        if(isBomb[i-1][j+1]==true){
-                            bombAround[i][j]+=1;
-                        }
-                    
-                        //kanan bawah
-                        if(isBomb[i+1][j-1]==true){
-                            bombAround[i][j]+=1;
-                        }                       
-                    }
-
                 }
-                if(bombAround[i][j]>0){
-                    isNumber[i][j]=true;
+
+                if (bombAround[i][j] > 0) {
+                    isNumber[i][j] = true;
                 }
             }
         }
     }
 
-    void BlankspaceHandler(){
+    void BlankspaceHandler(int x, int y) {
+        // Base cases: stop if out of bounds, already unlocked, or flagged
+        if (x < 0 || x >= mapSize || y < 0 || y >= mapSize) return;
+        if (isUnlocked[x][y] || isFlagged[x][y]) return;
 
+        // Reveal the current tile
+        isUnlocked[x][y] = true;
+
+        // If it's a blank tile (0 bombs around), recursively call on all 8 neighbors
+        if (bombAround[x][y] == 0) {
+            for (int xOffset = -1; xOffset <= 1; xOffset++) {
+                for (int yOffset = -1; yOffset <= 1; yOffset++) {
+                    BlankspaceHandler(x + xOffset, y + yOffset);
+                }
+            }
+        }
     }
 
 };
@@ -676,47 +484,3 @@ int main() {
 
 
 
-// void checkSurrounding() {
-//     for (int i = 0; i < mapSize; i++) {
-//         for (int j = 0; j < mapSize; j++) {
-//             if (isBomb[i][j]) continue; // Skip if this tile itself is a bomb
-
-//             // Look at all 8 directions around coordinate (i, j)
-//             for (int xOffset = -1; xOffset <= 1; xOffset++) {
-//                 for (int yOffset = -1; yOffset <= 1; yOffset++) {
-//                     int ni = i + xOffset;
-//                     int nj = j + yOffset;
-
-//                     // Ensure neighbor is inside the valid map bounds
-//                     if (ni >= 0 && ni < mapSize && nj >= 0 && nj < mapSize) {
-//                         if (isBomb[ni][nj]) {
-//                             bombAround[i][j]++;
-//                         }
-//                     }
-//                 }
-//             }
-
-//             if (bombAround[i][j] > 0) {
-//                 isNumber[i][j] = true;
-//             }
-//         }
-//     }
-// }
-
-// void BlankspaceHandler(int x, int y) {
-//     // Base cases: stop if out of bounds, already unlocked, or flagged
-//     if (x < 0 || x >= mapSize || y < 0 || y >= mapSize) return;
-//     if (isUnlocked[x][y] || isFlagged[x][y]) return;
-
-//     // Reveal the current tile
-//     isUnlocked[x][y] = true;
-
-//     // If it's a blank tile (0 bombs around), recursively call on all 8 neighbors
-//     if (bombAround[x][y] == 0) {
-//         for (int xOffset = -1; xOffset <= 1; xOffset++) {
-//             for (int yOffset = -1; yOffset <= 1; yOffset++) {
-//                 BlankspaceHandler(x + xOffset, y + yOffset);
-//             }
-//         }
-//     }
-// }
