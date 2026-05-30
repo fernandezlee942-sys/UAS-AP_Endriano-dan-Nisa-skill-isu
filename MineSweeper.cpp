@@ -283,6 +283,17 @@ public:
                                 bombAround[i][j]+=1;
                             }
 
+                            //bawah
+                            if(isBomb[i][j-1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // atas
+                            if(isBomb[i][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+
                             //kanan bawah
                             if(isBomb[i+1][j-1]==true){
                                 bombAround[i][j]+=1;
@@ -342,12 +353,23 @@ public:
                             if(isBomb[i-1][j+1]==true){
                                 bombAround[i][j]+=1;
                             }
+    
+                            //bawah
+                            if(isBomb[i][j-1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
+                            // atas
+                            if(isBomb[i][j+1]==true){
+                                bombAround[i][j]+=1;
+                            }
+
                         }
 
                     }
 
                     // atas selain sudut
-                    if(j=mapSize-1){
+                    if(j==mapSize-1){
                         // kiri bawah
                         if(isBomb[i-1][j-1]==true){
                             bombAround[i][j]+=1;
@@ -362,6 +384,16 @@ public:
                         if(isBomb[i+1][j-1]==true){
                             bombAround[i][j]+=1;
                         }
+
+                        // kiri
+                        if(isBomb[i-1][j]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        // kanan
+                        if(isBomb[i+1][j]==true){
+                            bombAround[i][j]+=1;
+                        }
                     }
                     
                     // bawah selain sudut
@@ -370,7 +402,17 @@ public:
                         if(isBomb[i+1][j+1]==true){
                             bombAround[i][j]+=1;
                         }
-                    
+                        
+                        // kiri
+                        if(isBomb[i-1][j]==true){
+                            bombAround[i][j]+=1;
+                        }
+
+                        // kanan
+                        if(isBomb[i+1][j]==true){
+                            bombAround[i][j]+=1;
+                        }
+                        
                         // atas
                         if(isBomb[i][j+1]==true){
                             bombAround[i][j]+=1;
@@ -424,14 +466,12 @@ public:
                         //kanan bawah
                         if(isBomb[i+1][j-1]==true){
                             bombAround[i][j]+=1;
-                        }       
-                        
-
-                        if(bombAround[i][j]>0){
-                            isNumber[i][j]=true;
-                        }
-
+                        }                       
                     }
+
+                }
+                if(bombAround[i][j]>0){
+                    isNumber[i][j]=true;
                 }
             }
         }
