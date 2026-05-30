@@ -21,8 +21,8 @@ using namespace std;
 
 class minesweeper{
 public:
-    time_t startTime = time(0);
-    time_t endTime = time(0);
+    time_t startTime;
+    time_t endTime;
 
     int mapSize;
     int bombTotal;
@@ -80,6 +80,7 @@ public:
     }
 
     void play(){
+        startTime=time(0);
         gameResult=true;
         //map reset
         for(int j = 0; j < mapSize; j++) {
@@ -200,6 +201,7 @@ public:
                 else if (todo==3){
                     if(isFlagged[koordinatTX][koordinatTY]==false){
                         cout<<"Spot has not yet to be flagged!";
+                        system("pause");
                     }
                     else{
                         isFlagged[koordinatTX][koordinatTY]=false;
@@ -218,6 +220,7 @@ public:
     
         
             g:
+            endTime=time(0);
             cout<<"The game has ended\n";
             cout<<"You have ";
             if(gameResult==true){
