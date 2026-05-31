@@ -64,15 +64,19 @@ public:
 
     void checkAnswer(){
         int correctAnswer = 0;
-
+        int incorrectAnswer = 0;
         for(int j = 0; j < mapSize; j++) {
             for(int i = 0; i < mapSize; i++) {
                 if(isFlagged[i][j]==isBomb[i][j]){
                     correctAnswer+=1;
                 }
+                else{
+                    incorrectAnswer+=1;
+                }
             }
         }
-        if (correctAnswer<bombTotal){
+
+        if ((correctAnswer<bombTotal)||incorrectAnswer>0){
             gameResult=false;
         }
     }
@@ -151,22 +155,23 @@ public:
                 checkAnswer();
                 goto g;
             }
-
+            
             d:
             cout<<"Input x Coordinate (current column) to guess : ";
             cin>>koordinatTX;
+            koordinatTX-=1;
             if((koordinatTX>=0)&&(koordinatTX<mapSize)){
-
                 e:
                 cout<<"Input y Coordinate (current row) to guess : ";
                 cin>>koordinatTY;
+                koordinatTY-=1;
                 if(todo==1){
                     if(isUnlocked[koordinatTX][koordinatTY]==true){
-                        cout<<"Coordinates already unlocked\n";
+                        cout<<"Coordinates has already been unlocked, choose another spot\n";
                         system("pause");
                     }
                     if((isUnlocked[koordinatTX][koordinatTY]==false)&&(isFlagged[koordinatTX][koordinatTY]==true)){
-                        cout<<"Coordinates already flagged\n";
+                        cout<<"Coordinates has already been flagged unlock it before flagging it\n";
                         system("pause");
                     }
                     // no need to complain abt how bad of a practice this is i know it myself, should've make a bgi if's before all of this to check for isflagged, since i did all of this wihtout planning shit i think it's kinda natural when i add new feature some legacy code needs a quick fix and this's one of the easiest i can do
@@ -175,7 +180,7 @@ public:
                         BlankspaceHandler(koordinatTX,koordinatTY);
                     }
                     else{
-                        cout<<"Input should be an integer smaller than the map size\n";
+                        cout<<"Input should be an integer smaller or equal to the map size\n";
                         system("pause");
                         goto e;
                     }
@@ -183,11 +188,11 @@ public:
                 }
                 else if (todo==2){
                     if(isFlagged[koordinatTX][koordinatTY]==true){
-                        cout<<"Spot has been flagged, choose another coordinate\n";
+                        cout<<"Spot has already been flagged, choose another coordinate\n";
                         system("pause");
                     }
                     else if(isUnlocked[koordinatTX][koordinatTY]==true){
-                        cout<<"Spot has been unlocked, choose another coordinate\n";
+                        cout<<"Spot has already been unlocked and is not a bomb, choose another coordinate\n";
                         system("pause");
                     }
                     else{
@@ -198,7 +203,7 @@ public:
 
                 else if (todo==3){
                     if(isUnlocked[koordinatTX][koordinatTY]==true){
-                        cout<<"Space has been unlocked and is not a bomb";
+                        cout<<"Space has been unlocked and is not a bomb\n";
                         system("pause");
                     }
 
@@ -216,7 +221,7 @@ public:
         
             else{
                 ClearInputBuffer();
-                cout<<"Input should be an integer smaller than the map size\n";
+                cout<<"Input should be an integer smaller or equal to the map size\n";
                 system("pause");
                 goto d;
             }
@@ -350,7 +355,16 @@ public:
         cout<<"Play Time (sadly I'm unable to make this timer go live since we have cin to run --> we need other libraries): "<<playTime<<endl;
         
         for(int j = mapSize-1;j>=0;j--){
-            cout<<"Row "<<j<<"  ";
+            if(j==9){ //biar row 10 g kelihatan lucu
+                cout<<"Row "<<j+1<<"  ";
+            }
+
+            else if (j<=mapSize) //b4 someone ask why the hell <= mapsize, i would like to defend myslf by saying that i mistaken the logic since i play test the whole thing with 10*10, so the old code is like, if j==mapsize-1, add one space more in row, so now i changed it into when row == 10 add one more space and for other situation make it less one space bar, since we checked the j==10 first it fixed the shit
+            {
+                cout<<"Row "<<j+1<<"   ";
+            }
+            
+            //ini cmn arraynya aja jadi g kt sentuh walau agak g enak buat dibaca array [0][0] buat koordinat row 1 col 1
             for(int i=0;i<mapSize;i++){
 
                 if (isUnlocked[i][j]==true){
@@ -377,8 +391,8 @@ public:
             cout<<"\n"; 
 
         }
-        cout<<"      ";
-        for (int l=0;l<mapSize;l++){
+        cout<<"       ";
+        for (int l=1;l<=mapSize;l++){
             cout<<"col "<<l<<" ";
         }
         cout<<"\n";
@@ -459,5 +473,4 @@ int main() {
 
 
 // todo list:
-// - perbaiki koordinat dari line 0 jadikan ke line 1-n;
 // - first unlocked cant be bomb, told the bomb maker to make a new bomb;
