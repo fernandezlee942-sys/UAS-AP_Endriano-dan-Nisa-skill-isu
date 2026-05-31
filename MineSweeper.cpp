@@ -155,7 +155,7 @@ public:
                 checkAnswer();
                 goto g;
             }
-            
+
             d:
             cout<<"Input x Coordinate (current column) to guess : ";
             cin>>koordinatTX;
@@ -471,6 +471,4 @@ int main() {
     return 0;
 }
 
-
-// todo list:
-// - first unlocked cant be bomb, told the bomb maker to make a new bomb;
+// scrapped the whole (first guess will always be a empty space, since it is not in the requirements)
