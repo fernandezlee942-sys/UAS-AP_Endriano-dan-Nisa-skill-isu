@@ -7,6 +7,9 @@
 // i've realized it midway but i could've just make the clearinputbuffer into a function that took string parameter(the error name) but apparently im too lazy to change it now
 
 
+//gosh i wished i read that starting index=1 requirement before the start of this project
+
+
 #define Fernandez_Lebih_Ganteng_Dari_Justin_Bieber true
 #include <iostream>
 #include <cstdlib>
@@ -183,7 +186,7 @@ public:
                         cout<<"Spot has been flagged, choose another coordinate\n";
                         system("pause");
                     }
-                    else if(isUnlocked[koordinatTX][koordinatTY]){
+                    else if(isUnlocked[koordinatTX][koordinatTY]==true){
                         cout<<"Spot has been unlocked, choose another coordinate\n";
                         system("pause");
                     }
@@ -194,8 +197,13 @@ public:
                 }
 
                 else if (todo==3){
+                    if(isUnlocked[koordinatTX][koordinatTY]==true){
+                        cout<<"Space has been unlocked and is not a bomb";
+                        system("pause");
+                    }
+
                     if(isFlagged[koordinatTX][koordinatTY]==false){
-                        cout<<"Spot has not yet to be flagged!";
+                        cout<<"Spot has not yet to be flagged!\n";
                         system("pause");
                     }
                     else{
@@ -316,10 +324,30 @@ public:
         }
     }
 
+    int bombNotFlagged(){
+        int temp = 0;
+        for (int i=0;i<mapSize;i++){
+            for(int j=0;j<mapSize;j++){
+                if((isBomb[i][j]==true)&&(isFlagged[i][j]==false)){
+                    temp+=1;   
+                }
+
+            }
+        }
+        return temp;
+    }
+
     void makeMap(int mapSize){
         if(gameResult==true){
             system("cls");
         }
+        cout<<"(I really think we dont need the bomb not found, doesnt this basically spill the bomb location? --> added it since i remember seeing it in the project requirements)"<<endl;
+        cout<<"Bomb not flagged : "<<bombNotFlagged()<<endl;
+
+        time_t currentTime = time(0);
+        double playTime = difftime(currentTime,startTime);
+        
+        cout<<"Play Time (sadly I'm unable to make this timer go live since we have cin to run --> we need other libraries): "<<playTime<<endl;
         
         for(int j = mapSize-1;j>=0;j--){
             cout<<"Row "<<j<<"  ";
