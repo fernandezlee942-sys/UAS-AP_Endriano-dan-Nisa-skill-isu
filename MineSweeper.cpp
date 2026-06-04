@@ -422,7 +422,7 @@ public:
                         int nj = j + yOffset;
 
                         // Ensure neighbor is inside the valid map bounds
-                        if (ni >= 0 && ni < mapSize && nj >= 0 && nj < mapSize) {
+                        if ((ni >= 0)&&(ni < mapSize)&&(nj >= 0)&&(nj < mapSize)) {
                             if (isBomb[ni][nj]==true) {
                                 bombAround[i][j]++;
                             }
