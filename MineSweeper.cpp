@@ -1,3 +1,12 @@
+// idk why but midcode i think the whole input shit broke, i kinda inputted 100000000 and the other input is somehow affected --> but when i try again somehow the bug didnt appear again praise the lord and his name and maybe myself form somehow eradicatinig bugs tht i didnt even understand come from where
+
+
+
+
+// goddamn i've just realized how bad this code is, its kinda a mmircale it works especially the cin for the koordinat tx and ty (i;ve just realizsed abt it but, i think i typoed the tx --> should have been just x and just goes on with it for the whole entire code goddamn i wanna save this version as a back up to prove im worse than yandere dev)
+
+
+
 // (currently the input method use in this whole program only stops user from typing random bullshit like string in the input --> you can still input float like 1.2 without any problems but try doing it with smtg like 1.232345342, the program itself still works normally but you'll trigger the safety mechanism added to the next cin so embrace for the impact, as for why I didnt make it so user cant input float, I'm too deep into this shit, wished I noticed it much earlier. If you input smtg like 1.2332342 I assume that its not likely ur trying to play the game normally but just trying to find a bug or 2 --> dev note: sorry for the impoliteness not quite used to polite words in english)
 
 
@@ -165,60 +174,64 @@ public:
                 cout<<"Input y Coordinate (current row) to guess : ";
                 cin>>koordinatTY;
                 koordinatTY-=1;
-                if(todo==1){
-                    if(isUnlocked[koordinatTX][koordinatTY]==true){
-                        cout<<"Coordinates has already been unlocked, choose another spot\n";
-                        system("pause");
-                    }
-                    if((isUnlocked[koordinatTX][koordinatTY]==false)&&(isFlagged[koordinatTX][koordinatTY]==true)){
-                        cout<<"Coordinates has already been flagged unlock it before flagging it\n";
-                        system("pause");
-                    }
-                    // no need to complain abt how bad of a practice this is i know it myself, should've make a bgi if's before all of this to check for isflagged, since i did all of this wihtout planning shit i think it's kinda natural when i add new feature some legacy code needs a quick fix and this's one of the easiest i can do
-                    else if((koordinatTY>=0)&&(koordinatTY<mapSize)){
-                        // isUnlocked[koordinatTX][koordinatTY]=true;
-                        BlankspaceHandler(koordinatTX,koordinatTY);
-                    }
-                    else{
-                        cout<<"Input should be an integer smaller or equal to the map size\n";
-                        system("pause");
-                        goto e;
-                    }
-                    goto f;
-                }
-                else if (todo==2){
-                    if(isFlagged[koordinatTX][koordinatTY]==true){
-                        cout<<"Spot has already been flagged, choose another coordinate\n";
-                        system("pause");
-                    }
-                    else if(isUnlocked[koordinatTX][koordinatTY]==true){
-                        cout<<"Spot has already been unlocked and is not a bomb, choose another coordinate\n";
-                        system("pause");
-                    }
-                    else{
-                        isFlagged[koordinatTX][koordinatTY]=true;
-                    }
-                    goto f;
-                }
+                
+                if((koordinatTY>=0)&&(koordinatTY<mapSize)){
+                    if(todo==1){
+                        if(isUnlocked[koordinatTX][koordinatTY]==true){
+                            cout<<"Coordinates has already been unlocked, choose another spot\n";
+                            system("pause");
+                        }
+                        if((isUnlocked[koordinatTX][koordinatTY]==false)&&(isFlagged[koordinatTX][koordinatTY]==true)){
+                            cout<<"Coordinates has already been flagged unlock it before flagging it\n";
+                            system("pause");
+                        }
+                        // no need to complain abt how bad of a practice this is i know it myself, should've make a bgi if's before all of this to check for isflagged, since i did all of this wihtout planning shit i think it's kinda natural when i add new feature some legacy code needs a quick fix and this's one of the easiest i can do
+                        else if((koordinatTY>=0)&&(koordinatTY<mapSize)){
+                            // isUnlocked[koordinatTX][koordinatTY]=true;
+                            BlankspaceHandler(koordinatTX,koordinatTY);
+                        }
 
-                else if (todo==3){
-                    if(isUnlocked[koordinatTX][koordinatTY]==true){
-                        cout<<"Space has been unlocked and is not a bomb\n";
-                        system("pause");
+                        goto f;
+                    }
+                    else if (todo==2){
+                        if(isFlagged[koordinatTX][koordinatTY]==true){
+                            cout<<"Spot has already been flagged, choose another coordinate\n";
+                            system("pause");
+                        }
+                        else if(isUnlocked[koordinatTX][koordinatTY]==true){
+                            cout<<"Spot has already been unlocked and is not a bomb, choose another coordinate\n";
+                            system("pause");
+                        }
+                        else{
+                            isFlagged[koordinatTX][koordinatTY]=true;
+                        }
+                        goto f;
                     }
 
-                    if(isFlagged[koordinatTX][koordinatTY]==false){
-                        cout<<"Spot has not yet to be flagged!\n";
-                        system("pause");
-                    }
-                    else{
-                        isFlagged[koordinatTX][koordinatTY]=false;
-                    }
-                    goto f;
-                }
+                    else if (todo==3){
+                        if(isUnlocked[koordinatTX][koordinatTY]==true){
+                            cout<<"Space has been unlocked and is not a bomb\n";
+                            system("pause");
+                        }
 
+                        if(isFlagged[koordinatTX][koordinatTY]==false){
+                            cout<<"Spot has not yet to be flagged!\n";
+                            system("pause");
+                        }
+                        else{
+                            isFlagged[koordinatTX][koordinatTY]=false;
+                        }
+                        goto f;
+                    }
+
+                }
+                else{
+                    cout<<"Input should be an integer smaller or equal to the map size\n";
+                    system("pause");
+                    goto e;
+                }
             }
-        
+
             else{
                 ClearInputBuffer();
                 cout<<"Input should be an integer smaller or equal to the map size\n";
@@ -241,23 +254,6 @@ public:
             cout<<"Time Spent : "<<difftime(endTime,startTime)<<" seconds.\n";
             system("pause");
             playMenu();
-        }
-    }
-
-    bool checkAllUnlocked(){
-        int unlock = 0;
-        for(int j = 0;j<mapSize;j++){
-            for(int i=0;i<mapSize;i++){
-                if (isUnlocked[i][j]){
-                    unlock+=1;
-                }
-            }
-        }
-        if (unlock==((mapSize*mapSize)-bombTotal)){
-            return true;
-        }
-        else{
-            return false;
         }
     }
 
@@ -336,7 +332,6 @@ public:
                 if((isBomb[i][j]==true)&&(isFlagged[i][j]==false)){
                     temp+=1;   
                 }
-
             }
         }
         return temp;
