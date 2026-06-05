@@ -9,7 +9,6 @@
 
 using namespace std;
 
-// ================= STRUKTUR DATA =================
 struct KataGame {
     string kataAsli;
     string statusTebakan;
@@ -31,26 +30,6 @@ const string BANK_KATA[15] = {
 ScoreBoard leaderboard[5] = {
     {"Kosong", 0}, {"Kosong", 0}, {"Kosong", 0}, {"Kosong", 0}, {"Kosong", 0}
 };
-
-const string HANGMAN_ART[9] = {
-    "  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========",
-    "  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========",
-    "  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========",
-    "  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========",
-    "  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========",
-    "  +---+\n  |   |\n  O   |\n /|\\  |\n  |   |\n      |\n=========",
-    "  +---+\n  |   |\n  O   |\n /|\\  |\n  |   |\n /    |\n=========",
-    "  +---+\n  |   |\n  O   |\n /|\\  |\n  |   |\n / \\  |\n=========",
-    "  +---+\n  |   |\n (X)  |\n /|\\  |\n  |   |\n / \\  |\n========="
-};
-
-void clearScreen() {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
-}
 
 void inisialisasiGame(KataGame* game, int maxNyawa) {
     game->kataAsli = BANK_KATA[rand() % 15];
@@ -139,7 +118,7 @@ void updateLeaderboard(string nama, int skorBaru) {
 }
 
 void tampilkanUI(const KataGame* game, const char tebakanSalah[], int jumlahSalah, string pesan) {
-    clearScreen();
+    system("cls");
     cout << "========================================\n";
     cout << "|          GAME TEBAK KATA CLI         |\n";
     cout << "========================================\n\n";
@@ -148,8 +127,6 @@ void tampilkanUI(const KataGame* game, const char tebakanSalah[], int jumlahSala
     int indexArt = (nyawaHilang * 8) / game->maxNyawa;
     if (indexArt > 8) indexArt = 8;
     if (indexArt < 0) indexArt = 0;
-
-    cout << HANGMAN_ART[indexArt] << "\n\n";
  
     cout << "Kata    : ";
     for (char c : game->statusTebakan) {
