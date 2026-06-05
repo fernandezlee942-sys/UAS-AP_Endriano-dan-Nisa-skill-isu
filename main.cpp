@@ -9,7 +9,7 @@ int main() {
     char mainLagi;
     string namaPemain;
 
-    clearScreen();
+    system("cls");
     cout << "========================================\n";
     cout << "|    HALO! SELAMAT DATANG DI GAME      |\n";
     cout << "========================================\n\n";
@@ -25,7 +25,7 @@ int main() {
 
         int pilihan;
         do {
-            clearScreen();
+            system("cls");
             cout << "========================================\n";
             cout << "|       PILIH TINGKAT KESULITAN        |\n";
             cout << "========================================\n";
