@@ -1,9 +1,5 @@
     #include <iostream>
-    #include <thread>
-    #include <chrono>
-    #include <iomanip>
     #include <ctime>
-    #include <string>
     #include <vector>
     using namespace std;
 
@@ -57,24 +53,28 @@ void opsidua(vector<Kendaraan> &mobil)
 {
     system("cls");
 
+    Kendaraan *ptr;
+
     cout << "DAFTAR MOBIL YANG SUDAH TERPARKIR : "
          << "\n====================================================\n\n";
          cin.ignore();
 
     for (int i = 0; i < mobil.size(); i++)
     {
+        ptr = &mobil[i];
+
         time_t sekarang = time(0);
 
-        int totalDetik = difftime(sekarang, mobil[i].waktumasuk);
+        int totalDetik = difftime(sekarang, ptr -> waktumasuk);
 
         int jam = totalDetik / 3600;
         int menit = (totalDetik % 3600) / 60;
         int detik = totalDetik % 60;
 
         cout << "Mobil ke-" << i + 1 << endl;
-        cout << "Plat mobil  : " << mobil[i].plat << endl;
-        cout << "Merk mobil  : " << mobil[i].merek << endl;
-        cout << "Warna mobil : " << mobil[i].warna << endl;
+        cout << "Plat mobil  : " << ptr -> plat << endl;
+        cout << "Merk mobil  : " << ptr -> merek << endl;
+        cout << "Warna mobil : " << ptr -> warna << endl;
 
         cout << "Waktu parkir : "
              << jam << " jam "
@@ -120,6 +120,7 @@ void opsitiga(vector<Kendaraan> &mobil)
         cout << "\n====================================================\n\n";
     };
 
+    do {
     cout << "Masukkan plat mobil yang ingin dibayar : ";
     getline(cin, bayar);
 
@@ -136,8 +137,8 @@ void opsitiga(vector<Kendaraan> &mobil)
 
             int totalBiaya = totalDetik * 8;
 
-            cout << "\nB I A Y A P A R K I R : Rp"
-                 << totalBiaya << endl;
+            cout << "\nB I A Y A P A R K I R : Rp " << totalBiaya << endl;
+            mobil.erase(mobil.begin() + i);
 
             break;
         }
@@ -147,7 +148,8 @@ void opsitiga(vector<Kendaraan> &mobil)
     {
         cout << "\nPLAT TIDAK DITEMUKAN!" << endl;
     }
-
+}
+while (!ditemukan);
     getchar();
 }
 
