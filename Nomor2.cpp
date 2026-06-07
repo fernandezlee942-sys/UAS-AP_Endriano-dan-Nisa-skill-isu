@@ -1,11 +1,11 @@
 #include <iostream>
-#include <limits>
+// #include <limits> // agar ga langsung end
 #include "TebakKata.h"
 
 using namespace std;
 
 int main() {
-    srand(time(0)); 
+    srand(time(0)); //supaya kata yang dipilih acak setiap kali program dijalankan
     char mainLagi;
     string namaPemain;
 
@@ -76,7 +76,7 @@ int main() {
             cout << "\n--- YAH, KAMU KALAH! ---\n";
             cout << "Kata rahasia yang benar adalah: " << game.kataAsli << "\n";
             cout << "\nTekan Enter untuk kembali ke menu...";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cin.get();
         } else {
             tampilkanUI(&game, tebakanSalah, jumlahSalah, "PERMAINAN SELESAI!");
@@ -85,7 +85,7 @@ int main() {
             cout << "Skor kamu: " << skor << "\n";
             updateLeaderboard(namaPemain, skor);
             cout << "\nTekan Enter untuk melanjutkan...";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cin.get();
         }
 
