@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-    srand(time(0)); //supaya kata yang dipilih acak setiap kali program dijalankan
+    srand(time(0));
     char mainLagi;
     string namaPemain;
 
