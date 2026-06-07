@@ -21,7 +21,7 @@ struct ScoreBoard {
     int skor;
 };
 
-const string BANK_KATA[15] = {
+string BANK_KATA[15] = {
     "ALGORITMA", "KOMPUTER", "PEMROGRAMAN", "POINTER", "STRUKTUR",
     "DATABASE", "JARINGAN", "INTERNET", "TERMINAL", "KEYBOARD",
     "MONITOR", "PROSESOR", "SOFTWARE", "HARDWARE", "DEBUGGING"
@@ -37,14 +37,14 @@ void inisialisasiGame(KataGame* game, int maxNyawa) {
     game->maxNyawa = maxNyawa;
 
     game->statusTebakan = "";
-    for (size_t i = 0; i < game->kataAsli.length(); i++) {
+    for (int i = 0; i < game->kataAsli.length(); i++) {
         game->statusTebakan += "_";
     }
 
     int indeksAcak = rand() % game->kataAsli.length();
     char hurufBonus = game->kataAsli[indeksAcak];
 
-    for (size_t i = 0; i < game->kataAsli.length(); i++) {
+    for (int i = 0; i < game->kataAsli.length(); i++) {
         if (game->kataAsli[i] == hurufBonus) {
             game->statusTebakan[i] = hurufBonus;
         }
@@ -71,7 +71,7 @@ void prosesTebakan(KataGame* game, char tebakan, char tebakanSalah[], int* jumla
     }
 
     bool tebakanBenar = false;
-    for (size_t i = 0; i < game->kataAsli.length(); i++) {
+    for (int i = 0; i < game->kataAsli.length(); i++) {
         if (game->kataAsli[i] == tebakan) {
             game->statusTebakan[i] = tebakan; 
             tebakanBenar = true;
@@ -88,11 +88,11 @@ void prosesTebakan(KataGame* game, char tebakan, char tebakanSalah[], int* jumla
 bool gunakanHint(KataGame* game) {
     if (game->sisaNyawa <= 1) return false; 
 
-    for (size_t i = 0; i < game->statusTebakan.length(); i++) {
+    for (int i = 0; i < game->statusTebakan.length(); i++) {
         if (game->statusTebakan[i] == '_') { 
             char target = game->kataAsli[i];
             
-            for (size_t j = 0; j < game->kataAsli.length(); j++) {
+            for (int j = 0; j < game->kataAsli.length(); j++) {
                 if (game->kataAsli[j] == target) {
                     game->statusTebakan[j] = target;
                 }
