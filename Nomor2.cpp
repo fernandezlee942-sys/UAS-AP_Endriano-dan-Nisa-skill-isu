@@ -1,5 +1,4 @@
 #include <iostream>
-// #include <limits> // agar ga langsung end
 #include "TebakKata.h"
 
 using namespace std;
