@@ -59,8 +59,7 @@ int main() {
             }
 
             bool isDuplikat, isValid;
-            prosesTebakan(&game, input, tebakanSalah, &jumlahSalah, &isDuplikat, &isValid); 
-
+            prosesTebakan(&game, input, tebakanSalah, &jumlahSalah, &isDuplikat, &isValid);
             if (!isValid) {
                 pesanSistem = "Tolong masukkan huruf alphabet saja!";
             } else if (isDuplikat) {
