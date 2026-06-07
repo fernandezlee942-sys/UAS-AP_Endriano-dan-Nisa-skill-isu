@@ -21,7 +21,6 @@ public:
     bool isUnlocked[10][10];
     bool isFlagged[10][10];
     bool gameResult=true;
-    bool isFilled[10][10];
 
     
     bool AllFilled(){
@@ -80,7 +79,6 @@ public:
                 bombAround[i][j] = 0;
                 isBlank[i][j] = true;
                 isFlagged[i][j] = false;  
-                isFilled[i][j]=false;
             }
         }
                 
@@ -169,6 +167,11 @@ public:
                         goto f;
                     }
                     else if (todo==2){
+                        if(bombNotFlagged()==0){
+                            cout<<"The amount of flag is already the same as the amount of bomb go unflag some coordinates\n";
+                            system("pause");
+                            goto f;
+                        }
                         if(isFlagged[koordinatTX][koordinatTY]==true){
                             cout<<"Spot has already been flagged, choose another coordinate\n";
                             system("pause");
@@ -300,19 +303,18 @@ public:
         int temp = 0;
         for (int i=0;i<mapSize;i++){
             for(int j=0;j<mapSize;j++){
-                if((isBomb[i][j]==true)&&(isFlagged[i][j]==false)){
-                    temp+=1;   
+                if(isFlagged[i][j]==true){
+                    temp+=1;
                 }
             }
         }
-        return temp;
+        return bombTotal-temp;
     }
 
     void makeMap(int mapSize){
         if(gameResult==true){
             system("cls");
         }
-        cout<<"(I really think we dont need the bomb not found, doesnt this basically spill the bomb location? --> added it since i remember seeing it in the project requirements)"<<endl;
         cout<<"Bomb not flagged : "<<bombNotFlagged()<<endl;
 
         time_t currentTime = time(0);
